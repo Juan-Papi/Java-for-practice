@@ -4,7 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 
+import com.miempresa.negocio.datasources.ProductDatasourceImpl;
+import com.miempresa.negocio.repositories.ProductRepositoryImpl;
+import com.miempresa.presentacion.PruebaProducto;
+
 public class Fproducto extends JFrame {
+
+    PruebaProducto pruebaProducto = new PruebaProducto(new ProductRepositoryImpl(new ProductDatasourceImpl()));
 
     public Fproducto() {
         // Configura el JFrame (ventana principal)

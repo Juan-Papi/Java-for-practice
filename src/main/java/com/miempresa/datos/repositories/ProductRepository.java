@@ -24,14 +24,14 @@ public abstract class ProductRepository {
      * @param id El ID del producto a eliminar.
      * @return true si el producto fue eliminado con éxito, false en caso contrario.
      */
-    public abstract boolean delete(Long id);
+    public abstract boolean delete(int id);
 
     /**
      * Obtiene un producto del repositorio por su ID.
      * @param id El ID del producto a buscar.
      * @return Un Optional que contiene el producto si se encuentra, o vacío si no se encuentra.
      */
-    public abstract Optional<Product> getById(Long id);
+    public abstract Optional<Product> getById(int id);
 
     /**
      * Obtiene todos los productos del repositorio.

@@ -7,7 +7,7 @@ public class Product {
     private int cantidad;
 
     // Constructor, getters y setters
-    public void Producto(int id, String nombre, double precio, int cantidad) {
+    public Product(int id, String nombre, double precio, int cantidad) {
         this.id = id;
         this.nombre = nombre;
         this.precio = precio;
@@ -44,5 +44,10 @@ public class Product {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
+    }
+
+    @Override
+    public String toString() {
+        return "Product [id=" + id + ", nombre=" + nombre + ", precio=" + precio + ", cantidad=" + cantidad + "]";
     }
 }
