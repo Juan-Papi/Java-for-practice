@@ -8,7 +8,7 @@ import com.miempresa.negocio.datasources.ProductDatasourceImpl;
 import com.miempresa.negocio.repositories.ProductRepositoryImpl;
 
 public class PruebaProducto {
-    ProductRepository productRepository;
+    public ProductRepository productRepository;
 
     public PruebaProducto(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -27,7 +27,7 @@ public class PruebaProducto {
 
         System.out.println("Producto insertado exitosamente \n" + newProduct.toString());
      // Obtener y mostrar todos los productos
-     
+
         List<Product> productos = pruebaProducto.productRepository.getAll();
         System.out.println("Lista de productos:");
         

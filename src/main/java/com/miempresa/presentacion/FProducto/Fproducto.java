@@ -2,15 +2,21 @@ package com.miempresa.presentacion.FProducto;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.table.DefaultTableModel;
-
 import com.miempresa.negocio.datasources.ProductDatasourceImpl;
 import com.miempresa.negocio.repositories.ProductRepositoryImpl;
 import com.miempresa.presentacion.PruebaProducto;
+import com.miempresa.datos.entities.Product;
 
 public class Fproducto extends JFrame {
 
     PruebaProducto pruebaProducto = new PruebaProducto(new ProductRepositoryImpl(new ProductDatasourceImpl()));
+
+    private JTextField txtID, txtNombre, txtPrecio;
+    private JComboBox<String> comboCategoria;
+    private DefaultTableModel modeloTabla;
 
     public Fproducto() {
         // Configura el JFrame (ventana principal)
@@ -46,8 +52,7 @@ public class Fproducto extends JFrame {
         menuArchivo.addSeparator(); // Añade un separador
         menuArchivo.add(itemSalir);
 
-        // Asigna un ActionListener a cada ítem del menú, llamando a funciones
-        // específicas
+        // Asigna un ActionListener a cada ítem del menú
         itemNuevo.addActionListener(e -> onNuevo());
         itemAbrir.addActionListener(e -> onAbrir());
         itemGuardar.addActionListener(e -> onGuardar());
@@ -130,20 +135,19 @@ public class Fproducto extends JFrame {
         panelCampos.setLayout(new GridLayout(4, 2, 10, 10));
 
         panelCampos.add(new JLabel("ID:"));
-        JTextField txtID = new JTextField();
+        txtID = new JTextField();
         panelCampos.add(txtID);
 
         panelCampos.add(new JLabel("Nombre:"));
-        JTextField txtNombre = new JTextField();
+        txtNombre = new JTextField();
         panelCampos.add(txtNombre);
 
         panelCampos.add(new JLabel("Precio:"));
-        JTextField txtPrecio = new JTextField();
+        txtPrecio = new JTextField();
         panelCampos.add(txtPrecio);
 
         panelCampos.add(new JLabel("Categoría:"));
-        JComboBox<String> comboCategoria = new JComboBox<>(
-                new String[] { "Electrónica", "Ropa", "Alimentos", "Otros" });
+        comboCategoria = new JComboBox<>(new String[] { "Electrónica", "Ropa", "Alimentos", "Otros" });
         panelCampos.add(comboCategoria);
 
         // Panel para los botones
@@ -153,6 +157,11 @@ public class Fproducto extends JFrame {
         JButton btnInsertar = new JButton("Insertar");
         JButton btnActualizar = new JButton("Actualizar");
         JButton btnEliminar = new JButton("Eliminar");
+
+        // Agregar ActionListeners a los botones
+        btnInsertar.addActionListener(e -> onInsertar());
+        btnActualizar.addActionListener(e -> onActualizar());
+        btnEliminar.addActionListener(e -> onEliminar());
 
         panelBotones.add(btnInsertar);
         panelBotones.add(btnActualizar);
@@ -165,7 +174,7 @@ public class Fproducto extends JFrame {
 
         // Tabla para mostrar los productos
         String[] columnas = { "ID", "Nombre", "Precio", "Categoría" };
-        DefaultTableModel modeloTabla = new DefaultTableModel(columnas, 0);
+        modeloTabla = new DefaultTableModel(columnas, 0);
         JTable tablaProductos = new JTable(modeloTabla);
 
         JScrollPane scrollPane = new JScrollPane(tablaProductos);
@@ -179,6 +188,64 @@ public class Fproducto extends JFrame {
 
         // Añade el panel principal a la ventana
         this.add(mainPanel);
+
+        // Cargar los productos existentes en la tabla
+        cargarProductosEnTabla();
+    }
+
+    // Métodos para manejar acciones CRUD
+    private void onInsertar() {
+        try {
+            int id = Integer.parseInt(txtID.getText());
+            String nombre = txtNombre.getText();
+            double precio = Double.parseDouble(txtPrecio.getText());
+            String categoria = (String) comboCategoria.getSelectedItem();
+
+            Product product = new Product(id, nombre, precio, 0); // Añadir cantidad si es 
+        
+            pruebaProducto.productRepository.insert(product);
+            cargarProductosEnTabla();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese valores válidos.");
+        }
+    }
+
+    private void onActualizar() {
+        try {
+            int id = Integer.parseInt(txtID.getText());
+            String nombre = txtNombre.getText();
+            double precio = Double.parseDouble(txtPrecio.getText());
+            String categoria = (String) comboCategoria.getSelectedItem();
+
+            Product product = new Product(id, nombre, precio, 0); // Añadir cantidad si es necesario
+            pruebaProducto.productRepository.update(product);
+            cargarProductosEnTabla();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese valores válidos.");
+        }
+    }
+
+    private void onEliminar() {
+        try {
+            int id = Integer.parseInt(txtID.getText());
+            pruebaProducto.productRepository.delete(id);
+            cargarProductosEnTabla();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese un ID válido.");
+        }
+    }
+
+    // Método para cargar productos en la tabla
+    private void cargarProductosEnTabla() {
+        modeloTabla.setRowCount(0); // Limpiar la tabla
+        pruebaProducto.productRepository.getAll().forEach(product -> {
+            Object[] row = { product.getId(), product.getNombre(), product.getPrecio(), "Categoría Aquí" }; // Ajustar
+                                                                                                            // según la
+                                                                                                            // estructura
+                                                                                                            // de
+                                                                                                            // Product
+            modeloTabla.addRow(row);
+        });
     }
 
     public static void main(String[] args) {
